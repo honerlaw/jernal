@@ -1,0 +1,12 @@
+{
+  "name": "jernal",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "lerna": "^3.22.1"
+  },
+  "scripts": {
+    "docker": "docker-compose down && docker-compose up"
+  }
+}
