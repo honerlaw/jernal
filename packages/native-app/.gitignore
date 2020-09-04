@@ -9,6 +9,7 @@ npm-debug.*
 *.orig.*
 web-build/
 .expo-shared/
+src/generated/
 
 # macOS
 .DS_Store

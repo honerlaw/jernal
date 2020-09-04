@@ -14,7 +14,7 @@ import { TransformService } from "./service/TransformService";
       NestGraphQLModule.forRoot({
         debug: false,
         playground: true,
-        autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
+        autoSchemaFile: join(process.cwd(), 'graphql/schema.gql'),
         sortSchema: true,
         context: ({ req }) => ({ req }), // needed for GraphQLAuthGuard
       }),

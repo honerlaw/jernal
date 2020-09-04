@@ -1,0 +1,13 @@
+mutation authenticateUser($input: UserAuthenticationInput!) {
+    authenticateUser(userAuthenticationInput: $input) {
+        accessToken
+        refreshToken
+    }
+}
+
+mutation createUser($input: UserCreateInput!) {
+    createUser(userCreateInput: $input) {
+        accessToken
+        refreshToken
+    }
+}

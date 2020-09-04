@@ -5,7 +5,7 @@ import { UserEntity } from "../../user/entity/User";
 import { JSONWebToken } from "../../graphql/schema/JSONWebToken";
 
 export type JWTPayload = {
-    scope: string
+    scopes: string[]
     id: string
 }
 
@@ -30,15 +30,27 @@ export class AuthService {
         return this.generateToken(user)
     }
 
+    public async refresh(user: UserEntity | undefined): Promise<JSONWebToken> {
+        if (!user) {
+            throw new UnauthorizedException()
+        }
+        
+        // @todo we can check a black list or something in the future to prevent issuing
+        // for now though we don't care
+
+        return this.generateToken(user)
+    }
+
     public generateToken(user: UserEntity): JSONWebToken {
         const token = new JSONWebToken()
         token.accessToken = this.jwtService.sign({
-            scope: 'access',
+            scopes: ['access'],
             id: user.id
         } as JWTPayload)
         token.refreshToken = this.jwtService.sign({
-            scope: 'refresh',
-            id: user.id
+            scopes: ['refresh'],
+            id: user.id,
+            expiresIn: '30d'
         } as JWTPayload)
         return token
     }

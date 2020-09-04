@@ -9,6 +9,7 @@ import { UserEntity } from "../../user/entity/User";
 import { TransformService } from "../service/TransformService";
 
 @Resolver(type => JournalEntry)
+@UseGuards(GraphQLAuthGuard)
 export class JournalEntryResolver {
 
     public constructor(
@@ -19,7 +20,6 @@ export class JournalEntryResolver {
     @Mutation(type => JournalEntry, {
         name: 'createJournalEntry'
     })
-    @UseGuards(GraphQLAuthGuard)
     public async create(@CurrentUser() user: UserEntity, @Args('journalEntryCreateInput') journalEntryCreateInput: JournalEntryCreateInput): Promise<JournalEntry> {
         const entry = await this.journalService.createJournalEntry(user, journalEntryCreateInput)
 

@@ -1,4 +1,4 @@
-import { Injectable, ConflictException, Logger, NotFoundException, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, ConflictException, Logger, NotFoundException, InternalServerErrorException, UnauthorizedException, BadRequestException } from "@nestjs/common";
 import { UserEntity } from "../entity/User";
 import { Repository, Connection } from "typeorm";
 import { InjectRepository, InjectConnection } from "@nestjs/typeorm";
@@ -9,6 +9,7 @@ import { JournalEntity } from "../../journal/entity/Journal";
 import { ExceptionID } from "../../../util/ExceptionId";
 import { CryptoService } from "./CryptoService";
 
+const EMAIL_REGEX = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
 const HASH_ROUNDS = 12
 
 @Injectable()
@@ -42,6 +43,10 @@ export class UserService {
     }
 
     public async create(email: string, password: string): Promise<UserEntity> {
+        if (EMAIL_REGEX.exec(email) === null) {
+            throw new BadRequestException(ExceptionID.USER_CREATE_FAILURE)
+        }
+
         const runner = this.connection.createQueryRunner()
         await runner.connect()
         await runner.startTransaction()

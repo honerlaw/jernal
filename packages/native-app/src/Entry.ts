@@ -1,4 +1,4 @@
 import registerRootComponent from 'expo/build/launch/registerRootComponent';
-import App from '../App';
+import { Router } from './components/Router';
 
-registerRootComponent(App);
+registerRootComponent(Router);

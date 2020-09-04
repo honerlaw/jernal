@@ -1,0 +1,17 @@
+query getJournals {
+  getJournals {
+    ...journal
+  }
+}
+
+fragment journal on Journal {
+    id
+    name
+    entries {
+      ...journalEntry
+    }
+}
+
+fragment journalEntry on JournalEntry {
+    id
+}

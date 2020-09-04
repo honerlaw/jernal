@@ -8,6 +8,7 @@ import { GraphQLAuthGuard } from "../../auth/guard/GraphQLAuthGuard";
 import { TransformService } from "../service/TransformService";
 
 @Resolver(of => Journal)
+@UseGuards(GraphQLAuthGuard)
 export class JournalResolver {
 
     public constructor(
@@ -19,7 +20,6 @@ export class JournalResolver {
         name: 'getJournals',
         nullable: 'items'
     })
-    @UseGuards(GraphQLAuthGuard)
     public async journals(@CurrentUser() user: UserEntity): Promise<Journal[]> {
         return await this.transformService.journals(user, await this.journalService.findByUser(user))
     }

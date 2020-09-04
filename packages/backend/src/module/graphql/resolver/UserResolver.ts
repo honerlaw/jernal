@@ -1,11 +1,14 @@
 import { User } from "src/module/graphql/schema/User";
-import { Resolver, Query, Args, ID, ResolveField, Parent, Mutation } from "@nestjs/graphql";
+import { Resolver, Args, Mutation } from "@nestjs/graphql";
 import { UserCreateInput } from "../input/UserCreateInput";
 import { JSONWebToken } from "../../graphql/schema/JSONWebToken";
 import { UserAuthenticationInput } from "../input/UserAuthenticationInput";
 import { AuthService } from "../../auth/service/AuthService";
-import { NotFoundException } from "@nestjs/common";
+import { UseGuards } from "@nestjs/common";
 import { UserService } from "../../user/service/UserService";
+import { CurrentUser } from "../decorator/CurrentUser";
+import { UserEntity } from "../../user/entity/User";
+import { GraphQLAuthGuard, Scopes } from "../../auth/guard/GraphQLAuthGuard";
 
 @Resolver(of => User)
 export class UserResolver {
@@ -15,26 +18,21 @@ export class UserResolver {
     private readonly userService: UserService
   ) {}
 
-  @Query(returns => User, {
-    name: 'findUser'
-  })
-  async find(@Args('id', { type: () => ID }) id: string): Promise<User> {
-    const user = await this.userService.findById(id)
-    if (!user) {
-      throw new NotFoundException()
-    }
-    return {
-        id: user.id,
-        email: user.email
-    }
-  }
-
   @Mutation(returns  => JSONWebToken, {
     name: 'authenticateUser'
   })
   async authenticate(@Args('userAuthenticationInput') userAuthenticationInput: UserAuthenticationInput): Promise<JSONWebToken> {
     const user = await this.userService.findByEmail(userAuthenticationInput.email)
     return await this.authService.authenticate(user, userAuthenticationInput.password)
+  }
+
+  @Mutation(returns => JSONWebToken, {
+    name: 'refreshUser'
+  })
+  @Scopes('refresh')
+  @UseGuards(GraphQLAuthGuard)
+  async refresh(@CurrentUser() user: UserEntity): Promise<JSONWebToken> {
+    return await this.authService.refresh(user)
   }
 
   @Mutation(returns => JSONWebToken, {
