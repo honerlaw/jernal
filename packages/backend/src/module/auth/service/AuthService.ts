@@ -3,6 +3,7 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from 'bcrypt'
 import { UserEntity } from "../../user/entity/User";
 import { JSONWebToken } from "../../graphql/schema/JSONWebToken";
+import { ExceptionID } from "../../../util/ExceptionId";
 
 export type JWTPayload = {
     scopes: string[]
@@ -19,12 +20,12 @@ export class AuthService {
 
     public async authenticate(user: UserEntity | undefined, password: string): Promise<JSONWebToken> {
         if (!user) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException(ExceptionID.AUTH_LOGIN)
         }
 
         const matches = await bcrypt.compare(password, user.hash)
         if (!matches) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException(ExceptionID.AUTH_LOGIN)
         }
 
         return this.generateToken(user)
@@ -32,7 +33,7 @@ export class AuthService {
 
     public async refresh(user: UserEntity | undefined): Promise<JSONWebToken> {
         if (!user) {
-            throw new UnauthorizedException()
+            throw new UnauthorizedException(ExceptionID.AUTH_LOGIN)
         }
         
         // @todo we can check a black list or something in the future to prevent issuing

@@ -1,0 +1,51 @@
+{
+    "en": {
+        "translation": {
+            "page": {
+                "login": {
+                    "label": {
+                        "email_address": "Email Address",
+                        "password": "Password"
+                    },
+                    "button": {
+                        "login": "Log In",
+                        "not_a_user": "Not a user?"
+                    }
+                },
+                "register": {
+                    "label": {
+                        "email_address": "Email Address",
+                        "password": "Password",
+                        "confirm_password": "Confirm Password"
+                    },
+                    "button": {
+                        "create_account": "Create Account",
+                        "already_a_user": "Already a user?"
+                    }
+                }
+            },
+            "error": {
+                "auth": {
+                    "login": "Invalid email address or password."
+                },
+                "unknown": "Something went wrong! Please try again.",
+                "user": {
+                    "not_found": "Could not find user!",
+                    "create": {
+                        "password_mismatch": "Passwords do not match!",
+                        "failure": "Failed to create user!",
+                        "email_in_use": "Email address is already in use!"
+                    }
+                },
+                "journal": {
+                    "not_found": "Journal not found!"
+                },
+                "journal_entry": {
+                    "create": {
+                        "failure": "Could not create journal entry!"
+                    }
+                }
+            }
+        }
+    }
+}

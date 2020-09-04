@@ -60,7 +60,7 @@ export class UserService {
             // found the user, so can't add them
             if (found) {
                 this.logger.debug(`could not find user for given email (${email})`)
-                throw new ConflictException(ExceptionID.EMAIL_IN_USE)
+                throw new ConflictException(ExceptionID.USER_CREATE_FAILURE_EMAIL_IN_USE)
             }
 
             // otherwise lets go ahead and insert the new user
