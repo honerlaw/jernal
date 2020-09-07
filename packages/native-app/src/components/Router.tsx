@@ -11,6 +11,8 @@ import { Dashboard } from './dashboard/Dashboard';
 import { TokenSelector } from '../store/selector/TokenSelector';
 import { NavigationContainer } from '@react-navigation/native';
 import { useGQLClient } from '../util/client';
+import { HeaderSettingsButton } from './dashboard/HeaderSettingsButton';
+import { Settings } from './dashboard/Settings';
 
 const Stack = createNativeStackNavigator()
 
@@ -32,8 +34,17 @@ const AuthNavigator: React.FC = () => {
         return null
     }
 
-    return <Stack.Navigator>
-        <Stack.Screen name="login" component={Dashboard} />
+    return <Stack.Navigator screenOptions={{headerTintColor: "#000000"}}>
+        <Stack.Screen name="dashboard" options={({navigation}) => ({
+            headerHideShadow: true,
+            headerTitle: 'Timeline',
+            headerRight: ({tintColor}) => <HeaderSettingsButton navigation={navigation} tintColor={tintColor} />
+        })} component={Dashboard} />
+        <Stack.Screen name="settings" options={{
+            headerHideShadow: true,
+            headerTitle: 'Settings',
+            headerBackTitle: '',
+        }} component={Settings} />
     </Stack.Navigator>
 }
 
