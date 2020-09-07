@@ -2,14 +2,17 @@ import React, { useState } from 'react'
 import { Button, Content, Container, Form, Item, Label, Text, Input, Toast } from "native-base"
 import { useCreateUserMutation } from '../../generated/graphql'
 import { useTranslation } from 'react-i18next'
-import { useHistory } from 'react-router-native'
+import { useNavigation } from '@react-navigation/native'
+import { useDispatch } from 'react-redux'
+import { setTokenAction } from '../../store/action/SetTokenAction'
 
 export const Register: React.FC = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
 
-    const history = useHistory()
+    const dispatch = useDispatch()
+    const navigation = useNavigation()
     const {t} = useTranslation()
     const [createUser] = useCreateUserMutation()
 
@@ -34,8 +37,10 @@ export const Register: React.FC = () => {
                 }
             })
 
-            // otherwise we got the response, lets go ahead and dispatch the tokens to the store
-            console.log(resp)
+            if (!resp.data?.createUser) {
+                throw new Error('error.unknown')
+            }
+            dispatch(setTokenAction(resp.data.createUser))
         } catch (err) {
             Toast.show({
                 position: 'bottom',
@@ -47,7 +52,11 @@ export const Register: React.FC = () => {
     }
 
     const onRedirectPress = () => {
-        history.replace('/login')
+        if (navigation.canGoBack()) {
+            navigation.goBack()
+        } else {
+            navigation.navigate('login')
+        }
     }
 
     return <Container>
@@ -55,7 +64,7 @@ export const Register: React.FC = () => {
             <Form style={{margin: 24}}>
                 <Item floatingLabel last style={{paddingTop: 5, paddingBottom: 5}}>
                     <Label>{t('page.register.label.email_address')}</Label>
-                    <Input value={email} onChangeText={setEmail} />
+                    <Input value={email} onChangeText={setEmail} autoCapitalize={"none"} />
                 </Item>
                 <Item floatingLabel last style={{paddingTop: 5, paddingBottom: 5}}>
                     <Label>{t('page.register.label.password')}</Label>

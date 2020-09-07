@@ -1,13 +1,17 @@
 mutation authenticateUser($input: UserAuthenticationInput!) {
     authenticateUser(userAuthenticationInput: $input) {
-        accessToken
-        refreshToken
+        ...jsonWebToken
     }
 }
 
 mutation createUser($input: UserCreateInput!) {
     createUser(userCreateInput: $input) {
-        accessToken
-        refreshToken
+        ...jsonWebToken
     }
+}
+
+
+fragment jsonWebToken on JSONWebToken {
+    accessToken
+    refreshToken
 }

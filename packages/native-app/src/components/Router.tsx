@@ -1,28 +1,58 @@
 import React from 'react'
-import { NativeRouter, Route, Redirect } from "react-router-native";
-import { Provider } from 'react-redux'
+import { Provider, useSelector } from 'react-redux'
 import { Login } from './auth/Login';
 import { Register } from './auth/Register';
-import { createStore } from '../store/store';
-import { ApolloProvider, ApolloClient, InMemoryCache } from '@apollo/client'
+import { useStore } from '../store/store';
+import { ApolloProvider } from '@apollo/client'
 import { Root } from 'native-base'
+import 'react-native-gesture-handler';
+import { createNativeStackNavigator } from 'react-native-screens/native-stack'
+import { Dashboard } from './dashboard/Dashboard';
+import { TokenSelector } from '../store/selector/TokenSelector';
+import { NavigationContainer } from '@react-navigation/native';
+import { useGQLClient } from '../util/client';
 
-const client = new ApolloClient({
-    uri: 'http://localhost:3000/graphql',
-    cache: new InMemoryCache()
-});
+const Stack = createNativeStackNavigator()
+
+const UnAuthNavigator: React.FC = () => {
+    const token = useSelector(TokenSelector)
+    if (token) {
+        return null
+    }
+
+    return <Stack.Navigator>
+        <Stack.Screen options={{headerShown: false}} name="login" component={Login} />
+        <Stack.Screen options={{headerShown: false}} name="register" component={Register} />
+    </Stack.Navigator>
+}
+
+const AuthNavigator: React.FC = () => {
+    const token = useSelector(TokenSelector)
+    if (!token) {
+        return null
+    }
+
+    return <Stack.Navigator>
+        <Stack.Screen name="login" component={Dashboard} />
+    </Stack.Navigator>
+}
 
 export const Router: React.FC = () => {
+    const store = useStore()
+    const client = useGQLClient(store)
+    if(!store || !client) {
+        return null
+    }
+
     return <Root>
-        <NativeRouter>
-            <ApolloProvider client={client}>
-                <Provider store={createStore()}>
-                        <Redirect to={'/login'} />
-                        <Route exact path="/login" component={Login} />
-                        <Route exact path="/register" component={Register} />
-                </Provider>
-            </ApolloProvider>
-        </NativeRouter>
+        <ApolloProvider client={client}>
+            <Provider store={store}>
+                <NavigationContainer>
+                    <AuthNavigator />
+                    <UnAuthNavigator />
+                </NavigationContainer>
+            </Provider>
+        </ApolloProvider>
     </Root>
 }
 
