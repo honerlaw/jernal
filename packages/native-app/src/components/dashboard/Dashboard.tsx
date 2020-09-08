@@ -13,6 +13,8 @@ export const Dashboard: React.FC = () => {
         </Container>
     }
 
+    console.log(data)
+
     return <Container>
         <Content>
             <Text>Hello</Text>

@@ -1,6 +1,37 @@
 {
     "en": {
         "translation": {
+            "question": {
+                "feel": {
+                    "label": "How do you feel?",
+                    "answer": {
+                        "happy": "Happy",
+                        "sad": "Sad",
+                        "angry": "Angry",
+                        "excited": "Excited",
+                        "surprised": "Surprised"
+                    }
+                },
+                "feel_reason": {
+                    "label": "What caused you to feel that way?",
+                    "answer": {
+                        "work": "Work",
+                        "friends": "Friends",
+                        "family": "Family",
+                        "relationship": "Relationship",
+                        "health": "Health"
+                    }
+                },
+                "location": {
+                    "label": "Did you go anywhere special?"
+                },
+                "media": {
+                    "label": "Do you have any special pictures from today?"
+                },
+                "free_form": {
+                    "label": "What else happened?"
+                }
+            },
             "page": {
                 "login": {
                     "label": {

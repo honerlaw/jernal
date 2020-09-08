@@ -1,6 +1,7 @@
-import { Entity, ManyToOne, Column } from 'typeorm';
+import { Entity, ManyToOne, Column, ManyToMany, JoinTable, OneToMany } from 'typeorm';
 import { JournalEntryEntity } from './JournalEntry';
 import { AbstractEntity } from '../../../entity/AbstractEntity';
+import { QuestionEntity } from '../../question/entity/Question';
 
 @Entity({
   name: 'journalEntryQuestion'
@@ -8,12 +9,15 @@ import { AbstractEntity } from '../../../entity/AbstractEntity';
 export class JournalEntryQuestionEntity extends AbstractEntity {
 
   @Column()
-  question: string
-
-  @Column()
-  answer: string
+  answer: string // this is the answer you chose or wrote
 
   @ManyToOne(type => JournalEntryEntity, journal => journal.images)
   journalEntry: JournalEntryEntity;
+
+  @ManyToOne(type => QuestionEntity, {
+    eager: true
+  })
+  @JoinTable()
+  question: QuestionEntity
 
 }

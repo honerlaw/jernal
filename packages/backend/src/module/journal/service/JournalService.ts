@@ -1,5 +1,5 @@
-import { Injectable, Logger, NotFoundException, InternalServerErrorException, UnauthorizedException } from "@nestjs/common";
-import { UserEntity } from "src/module/user/entity/User";
+import { Injectable, Logger, NotFoundException, InternalServerErrorException } from "@nestjs/common";
+import { UserEntity } from "../../user/entity/User";
 import { InjectRepository, InjectConnection } from "@nestjs/typeorm";
 import { JournalEntity } from "../entity/Journal";
 import { Repository, Connection } from "typeorm";
@@ -10,6 +10,7 @@ import { JournalEntryImageEntity } from "../entity/JournalEntryImage";
 import { JournalEntryLocationEntity } from "../entity/JournalEntryLocation";
 import { JournalEntryQuestionEntity } from "../entity/JournalEntryQuestion";
 import { CryptoService } from "../../user/service/CryptoService";
+import { QuestionEntity } from "../../question/entity/Question";
 
 @Injectable()
 export class JournalService {
@@ -102,9 +103,20 @@ export class JournalService {
             }
 
             for (const question of journalEntryInput.questions) {
+                const foundQuestion = await runner.manager.findOne(QuestionEntity, {
+                    where: {
+                        id: question.question
+                    }
+                })
+
+                // @todo more descript error?
+                if (!foundQuestion) {
+                    throw new NotFoundException(ExceptionID.JOURNAL_ENTRY_CREATE_FAILURE)
+                }
+
                 await runner.manager.insert(JournalEntryQuestionEntity, {
                     journalEntry: entry,
-                    question: encryptor.encrypt(question.question),
+                    question: foundQuestion,
                     answer: encryptor.encrypt(question.answer)
                 })
             }

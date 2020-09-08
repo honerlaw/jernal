@@ -1,4 +1,4 @@
-import { User } from "src/module/graphql/schema/User";
+import { User } from "../../graphql/schema/User";
 import { Resolver, Args, Mutation } from "@nestjs/graphql";
 import { UserCreateInput } from "../input/UserCreateInput";
 import { JSONWebToken } from "../../graphql/schema/JSONWebToken";

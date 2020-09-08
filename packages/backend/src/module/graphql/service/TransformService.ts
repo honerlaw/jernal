@@ -4,7 +4,9 @@ import { UserEntity } from "../../user/entity/User";
 import { JournalEntity } from "../../journal/entity/Journal";
 import { Journal } from "../schema/Journal";
 import { JournalEntry } from "../schema/JournalEntry";
-import { JournalEntryEntity } from "src/module/journal/entity/JournalEntry";
+import { JournalEntryEntity } from "../../journal/entity/JournalEntry";
+import { QuestionEntity } from "../../question/entity/Question";
+import { Question } from "../schema/Question";
 
 @Injectable()
 export class TransformService {
@@ -28,7 +30,7 @@ export class TransformService {
     public async journalEntries(user: UserEntity, entries: JournalEntryEntity[], decryptor?: Decryptor): Promise<JournalEntry[]> {
         decryptor = decryptor ?? await this.cryptoService.createDecryptor(user)
 
-        return entries.map((entry) => {
+        return await Promise.all(entries.map(async (entry) => {
             return {
                 id: entry.id,
                 images: entry.images.map((image) => {
@@ -44,15 +46,39 @@ export class TransformService {
                         latitude: location.latitude
                     }
                 }),
-                questions: entry.questions.map((question) => {
+                questions: await Promise.all(entry.questions.map(async (question) => {
                     return {
                         id: question.id,
-                        question: decryptor.decrypt(question.question),
+                        question: await this.question(user, question.question, decryptor),
                         answer: decryptor.decrypt(question.answer)
                     }
-                })
+                }))
             }
-        })
+        }))
+    }
+
+    public async questions(user: UserEntity, questions: QuestionEntity[], decryptor?: Decryptor): Promise<Question[]> {
+        decryptor = decryptor ?? await this.cryptoService.createDecryptor(user)
+
+        return await Promise.all(questions.map((question) => {
+            return this.question(user, question, decryptor)
+        }))
+    }
+
+    public async question(user: UserEntity, questionEntity: QuestionEntity, decryptor?: Decryptor): Promise<Question> {
+        decryptor = decryptor ?? await this.cryptoService.createDecryptor(user)
+
+        return {
+            id: questionEntity.id,
+            question: questionEntity.user ? decryptor.decrypt(questionEntity.question) : questionEntity.question,
+            category: questionEntity.user ? decryptor.decrypt(questionEntity.category) : questionEntity.category,
+            answers: questionEntity.answers?.map((answerEntity) => {
+                return {
+                    id: answerEntity.id,
+                    answer: answerEntity.user ? decryptor.decrypt(answerEntity.answer) : answerEntity.answer
+                }
+            })
+        }
     }
 
 }

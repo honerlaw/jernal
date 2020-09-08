@@ -5,13 +5,41 @@ query getJournals {
 }
 
 fragment journal on Journal {
-    id
-    name
-    entries {
-      ...journalEntry
-    }
+  id
+  name
+  entries {
+    ...journalEntry
+  }
 }
 
 fragment journalEntry on JournalEntry {
-    id
+  id
+  images {
+    ...journalEntryImage
+  }
+  locations {
+    ...journalEntryLocation
+  }
+  questions {
+    ...journalEntryQuestion
+  }
+}
+
+fragment journalEntryImage on JournalEntryImage {
+  id
+  path
+}
+
+fragment journalEntryLocation on JournalEntryLocation {
+  id
+  longitude
+  latitude
+}
+
+fragment journalEntryQuestion on JournalEntryQuestion {
+  id
+  answer
+  question {
+    ...question
+  }
 }

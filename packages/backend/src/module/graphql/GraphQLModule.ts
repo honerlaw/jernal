@@ -8,6 +8,8 @@ import { UserResolver } from "./resolver/UserResolver";
 import { JournalResolver } from "./resolver/JournalResolver";
 import { JournalEntryResolver } from "./resolver/JournalEntryResolver";
 import { TransformService } from "./service/TransformService";
+import { QuestionModule } from "../question/QuestionModule";
+import { QuestionResolver } from "./resolver/QuestionResolver";
 
 @Module({
   imports: [
@@ -20,8 +22,9 @@ import { TransformService } from "./service/TransformService";
       }),
     AuthModule,
     UserModule,
-    JournalModule
+    JournalModule,
+    QuestionModule
   ],
-  providers: [UserResolver, JournalResolver, JournalEntryResolver, TransformService]
+  providers: [UserResolver, JournalResolver, JournalEntryResolver, QuestionResolver, TransformService]
 })
 export class GraphQLModule {}

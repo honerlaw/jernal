@@ -1,0 +1,19 @@
+query getQuestions {
+  getQuestions {
+    ...question
+  }
+}
+
+fragment question on Question {
+    id
+    category
+    question
+    answers {
+      ...answer
+    }
+}
+
+fragment answer on Answer {
+    id
+    answer
+}
