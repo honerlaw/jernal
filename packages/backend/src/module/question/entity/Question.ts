@@ -14,6 +14,12 @@ export class QuestionEntity extends AbstractEntity {
     @Column()
     category: string
 
+    @Column({
+        nullable: true,
+        default: null
+    })
+    order: number
+
     @ManyToOne(type => UserEntity, (user) => user.answers, {
         eager: true,
         nullable: true

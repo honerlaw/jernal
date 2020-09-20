@@ -6,9 +6,12 @@ import { AnswerEntity } from "src/module/question/entity/Answer";
 export class SeedQuestions1599525875577 implements MigrationInterface {
 
     public async up(runner: QueryRunner): Promise<void> {
-        for (const question of questions) {
+        for (let i = 0; i < questions.length; ++i) {
+            const question = questions[i]
+
             await runner.manager.insert(QuestionEntity, {
                 id: question.id,
+                order: i,
                 category: question.category,
                 question: question.question
             })

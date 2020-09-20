@@ -19,7 +19,10 @@ export class QuestionService {
                 user: null
             }, {
                 user
-            }]
+            }],
+            order: {
+                order: 'ASC'
+            }
         })
     }
 
