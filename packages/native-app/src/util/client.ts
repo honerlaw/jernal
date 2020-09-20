@@ -3,6 +3,7 @@ import { ApolloClient, InMemoryCache, createHttpLink } from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 import { Store } from 'redux';
 import { setTokenAction } from '../store/action/SetTokenAction';
+import { RefreshUserDocument } from '../generated/graphql';
 
 const buildNewFetchResult = (result: any, text: any) => {
     delete result.json
@@ -20,17 +21,43 @@ const createHttpRetryLink = (store: Store) => {
             const text = await result.text()
             try {
                 const json = JSON.parse(text)
+
                 if (!json.errors || json.errors.length === 0) {
                     return buildNewFetchResult(result, text)
                 }
                 const statusCode = json.errors[0].extensions.exception.status
 
-                if (statusCode === 401) {
-                    store.dispatch(setTokenAction(null))
-                }
+                if (statusCode === 401 || statusCode === 403) {
+                    const token = store.getState().token?.refreshToken
+                    if (token) {
 
-                if (statusCode === 403) {
-                    // @todo hit the refresh token endpoint and get new access tokens if we can, otherwise, logout
+                        const res = await fetch(input, {
+                            ...init,
+                            headers: {
+                                ...init?.headers,
+                                authorization: `Bearer ${token}`
+                            },
+                            body: JSON.stringify({
+                                query: RefreshUserDocument.loc?.source.body
+                            })
+                        })
+
+                        const refreshJson = await res.json()
+                        // no errors, so we can simply re-run the initial request with the new tokens
+                        if (!refreshJson.errors || json.errors.length === 0) {
+                            store.dispatch(setTokenAction(refreshJson.data.refreshUser))
+
+                            return fetch(input, {
+                                ...init,
+                                headers: {
+                                    ...init?.headers,
+                                    authorization: `Bearer ${refreshJson.data.refreshUser.accessToken}`
+                                }
+                            })
+                        } else {
+                            store.dispatch(setTokenAction(null))
+                        }
+                    }
                 }
             } catch (err) {
                 // do nothing, failed to parse, so re-wrap it and handle it downstream

@@ -50,9 +50,10 @@ export class AuthService {
         } as JWTPayload)
         token.refreshToken = this.jwtService.sign({
             scopes: ['refresh'],
-            id: user.id,
+            id: user.id
+        } as JWTPayload, {
             expiresIn: '30d'
-        } as JWTPayload)
+        })
         return token
     }
 

@@ -11,7 +11,7 @@ import { UserModule } from "../user/UserModule";
         JwtModule.register({
             secret: 'tis-a-secret', // @todo this is also used in JWTStrategy
             signOptions: {
-              expiresIn: '600s' // @todo change expires
+              expiresIn: '10s' // @todo change expires
             },
         }),
         UserModule

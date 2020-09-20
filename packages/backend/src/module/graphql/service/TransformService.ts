@@ -52,7 +52,8 @@ export class TransformService {
                         question: await this.question(user, question.question, decryptor),
                         answer: decryptor.decrypt(question.answer)
                     }
-                }))
+                })),
+                createdAt: entry.createdAt.getTime()
             }
         }))
     }

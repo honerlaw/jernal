@@ -4,6 +4,12 @@ query getJournals {
   }
 }
 
+mutation createJournalEntry($input: JournalEntryCreateInput!) {
+  createJournalEntry(journalEntryCreateInput: $input) {
+    ...journalEntry
+  }
+}
+
 fragment journal on Journal {
   id
   name
@@ -23,6 +29,7 @@ fragment journalEntry on JournalEntry {
   questions {
     ...journalEntryQuestion
   }
+  createdAt
 }
 
 fragment journalEntryImage on JournalEntryImage {

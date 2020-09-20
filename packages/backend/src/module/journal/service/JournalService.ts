@@ -29,14 +29,25 @@ export class JournalService {
         private readonly journalEntryRepository: Repository<JournalEntryEntity>
     ) {}
 
-    // @todo for now we eager load all of this information up front and return it so graphql then can handle serving it
-    // instead we should piece meal it together based on what is requested or not
     public async findByUser(user: UserEntity): Promise<JournalEntity[]> {
-        return await this.journalRepository.find({
-            where: {
+
+        // this allows us to order each journal by latest entry
+        return this.journalRepository.createQueryBuilder('journal')
+            .select()
+            .leftJoinAndSelect('journal.user', 'user')
+            .leftJoinAndSelect('journal.entries', 'journalEntry')
+            .leftJoinAndSelect('journalEntry.images', 'journalEntryImage')
+            .leftJoinAndSelect('journalEntry.locations', 'journalEntryLocation')
+            .leftJoinAndSelect('journalEntry.questions', 'journalEntryQuestion')
+            .leftJoinAndSelect('journalEntryQuestion.question', 'question')
+            .leftJoinAndSelect('question.answers', 'answer')
+            .where({
                 user
-            }
-        })
+            })
+            .orderBy({
+                'journalEntry.createdAt': 'DESC'
+            })
+            .getMany()
     }
 
     public async findJournalEntryById(id: string): Promise<JournalEntryEntity | undefined> {
@@ -85,21 +96,25 @@ export class JournalService {
                 throw new InternalServerErrorException()
             }
 
-            for (const image of journalEntryInput.images) {
-                await runner.manager.insert(JournalEntryImageEntity, {
-                    journalEntry: entry,
-                    path: encryptor.encrypt(image.path)
-                })
+            if (journalEntryInput.images) {
+                for (const image of journalEntryInput.images) {
+                    await runner.manager.insert(JournalEntryImageEntity, {
+                        journalEntry: entry,
+                        path: encryptor.encrypt(image.path)
+                    })
+                }
             }
 
-            for (const location of journalEntryInput.locations) {
+            if (journalEntryInput.locations) {
+                for (const location of journalEntryInput.locations) {
 
-                // @todo should this be encrypted?
-                await runner.manager.insert(JournalEntryLocationEntity, {
-                    journalEntry: entry,
-                    longitude: location.longitude,
-                    latitude: location.latitude
-                })
+                    // @todo should this be encrypted?
+                    await runner.manager.insert(JournalEntryLocationEntity, {
+                        journalEntry: entry,
+                        longitude: location.longitude,
+                        latitude: location.latitude
+                    })
+                }
             }
 
             for (const question of journalEntryInput.questions) {

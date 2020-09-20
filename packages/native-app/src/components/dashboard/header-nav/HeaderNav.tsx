@@ -24,7 +24,13 @@ const STYLES = StyleSheet.create({
     }
 })
 
-export const HeaderNav: React.FC = () => {
+type HeaderNavProps = {
+    journalId: string
+}
+
+export const HeaderNav: React.FC<HeaderNavProps> = ({
+    journalId
+}) => {
     const navigator = useNavigation()
 
     return <View style={STYLES.container}>
@@ -32,7 +38,7 @@ export const HeaderNav: React.FC = () => {
             <HeaderNavDetail title={'0'} description={'entries'} />
 
             <View style={STYLES.buttonContainer}>
-                <HeaderNavIconButton icon={Add} onPress={() => navigator.navigate('journal-entry-add')} />
+                <HeaderNavIconButton icon={Add} onPress={() => navigator.navigate('journal-entry-add', { journalId })} />
                 <HeaderNavIconButton icon={Settings} onPress={() => navigator.navigate('settings')} />
             </View>
         </View>

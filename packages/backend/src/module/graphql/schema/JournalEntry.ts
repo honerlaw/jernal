@@ -23,4 +23,7 @@ export class JournalEntry {
   @Field(type => [JournalEntryQuestion])
   questions: JournalEntryQuestion[]
 
+  @Field(type => Number)
+  createdAt: number
+
 }

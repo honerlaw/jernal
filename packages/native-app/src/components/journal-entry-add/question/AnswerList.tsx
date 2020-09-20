@@ -47,7 +47,7 @@ export const AnswerList: React.FC<AnswerListProps> = ({
             }
 
             const onPress = () => {
-                const newSelected = [...selected]
+                const newSelected: string[] = [...selected]
                 const index = newSelected.indexOf(answer.id) 
                 if (index !== -1) {
                     newSelected.splice(index, 1)
@@ -55,14 +55,23 @@ export const AnswerList: React.FC<AnswerListProps> = ({
                     newSelected.push(answer.id)
                 }
                 setSelected(newSelected)
-                onChange(newSelected)
+
+                const selectedAnswers: string[] = newSelected.map((id) => {
+                    const found = answers.find((answer) => answer?.id === id)
+                    if (found) {
+                        return t(found.answer)
+                    }
+                    return ''
+                }).filter((answer) => answer.length > 0)
+
+                onChange(selectedAnswers)
             }
 
             const isSelected = selected.indexOf(answer.id) !== -1
             const selectedContainerStyle = isSelected ? STYLES.answerSelected : undefined
             const selectedTextStyle = isSelected ? STYLES.answerSelectedText : undefined
 
-            return <TouchableOpacity onPress={onPress} style={[STYLES.answerContainer, selectedContainerStyle]}>
+            return <TouchableOpacity key={answer.id} onPress={onPress} style={[STYLES.answerContainer, selectedContainerStyle]}>
                 <Text style={selectedTextStyle} key={answer.id}>{t(answer.answer)}</Text>
             </TouchableOpacity>
         })}        

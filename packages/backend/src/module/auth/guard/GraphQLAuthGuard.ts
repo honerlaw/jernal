@@ -27,6 +27,9 @@ export class GraphQLAuthGuard extends AuthGuard('jwt') {
     if (!this.hasAccessScope(context)) {
       return false;
     }
+
+    (super.canActivate(context) as any).then(console.log)
+
     return super.canActivate(context)
   }
 

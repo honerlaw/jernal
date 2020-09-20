@@ -10,6 +10,11 @@ mutation createUser($input: UserCreateInput!) {
     }
 }
 
+mutation refreshUser {
+    refreshUser {
+        ...jsonWebToken
+    }
+}
 
 fragment jsonWebToken on JSONWebToken {
     accessToken
