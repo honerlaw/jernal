@@ -13,7 +13,7 @@ const buildNewFetchResult = (result: any, text: any) => {
 
 const createHttpRetryLink = (store: Store) => {
     return createHttpLink({
-        uri: 'http://localhost:3000/graphql',
+        uri: 'http://10.0.2.2:3000/graphql',
         credentials: 'same-origin',
         fetch: async (input: RequestInfo, init?: RequestInit) => {
             const result = await fetch(input, init)

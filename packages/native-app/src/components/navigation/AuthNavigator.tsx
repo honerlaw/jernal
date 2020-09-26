@@ -30,7 +30,7 @@ export const AuthNavigator: React.FC<AuthNavigatorProps> = ({
         <Stack.Navigator screenOptions={{headerTintColor: "#000000"}}>
             <Stack.Screen name="dashboard" options={{
                 ...DEFAULT_OPTIONS,
-                headerTitle: 'Journal'
+                headerTitle: 'jernal'
             }} component={Dashboard} />
             <Stack.Screen name="journal-entry-add" options={{
                 ...DEFAULT_OPTIONS,

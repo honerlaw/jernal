@@ -1,10 +1,41 @@
 import React, { useState } from 'react'
-import { Button, Content, Container, Form, Item, Label, Text, Input, Toast } from "native-base"
+import { Button, Content, Container, Form, Item, Label, Text, Input, Toast, View } from "native-base"
+import { StyleSheet } from "react-native"
 import { useCreateUserMutation } from '../../generated/graphql'
 import { useTranslation } from 'react-i18next'
 import { useNavigation } from '@react-navigation/native'
 import { useDispatch } from 'react-redux'
 import { setTokenAction } from '../../store/action/SetTokenAction'
+import { PRIMARY, SIZING } from '../../util/constant'
+import { Title } from '../util/Title'
+
+const STYLES = StyleSheet.create({
+    container: {
+        flex: 1,
+        justifyContent: 'center',
+        margin: SIZING.C
+    },
+    form: {
+        margin: SIZING.C
+    },
+    inputItem: {
+        margin: 0,
+        padding: 0,
+        paddingTop: SIZING.B,
+        paddingBottom: SIZING.B,
+        borderBottomWidth: 0
+    },
+    button: {
+        backgroundColor: PRIMARY,
+        marginTop: SIZING.C
+    },
+    outlineButton: {
+        marginTop: SIZING.C
+    },
+    outlineButtonText: {
+        fontSize: SIZING.B + SIZING.A
+    }
+})
 
 export const Register: React.FC = () => {
     const [email, setEmail] = useState('')
@@ -60,31 +91,32 @@ export const Register: React.FC = () => {
     }
 
     return <Container>
-        <Content scrollEnabled={false} contentContainerStyle={{flex: 1, justifyContent: 'center'}}>
-            <Form style={{margin: 24}}>
-                <Item floatingLabel last style={{paddingTop: 5, paddingBottom: 5}}>
+        <Content scrollEnabled={false} contentContainerStyle={STYLES.container}>
+            <Title />
+            <View style={STYLES.form}>
+                <Item floatingLabel style={STYLES.inputItem}>
                     <Label>{t('page.register.label.email_address')}</Label>
                     <Input value={email} onChangeText={setEmail} autoCapitalize={"none"} />
                 </Item>
-                <Item floatingLabel last style={{paddingTop: 5, paddingBottom: 5}}>
+                <Item floatingLabel style={STYLES.inputItem}>
                     <Label>{t('page.register.label.password')}</Label>
                     <Input secureTextEntry={true} value={password} onChangeText={setPassword} />
                 </Item>
-                <Item floatingLabel bordered={false} last style={{paddingTop: 5, paddingBottom: 5, marginBottom: 15}}>
+                <Item floatingLabel style={STYLES.inputItem}>
                     <Label>{t('page.register.label.confirm_password')}</Label>
                     <Input secureTextEntry={true} value={confirmPassword} onChangeText={setConfirmPassword} />
                 </Item>
-                <Button onPress={onRegisterPress} block>
+                <Button onPress={onRegisterPress} style={STYLES.button} block>
                     <Text>
                         {t('page.register.button.create_account')}
                     </Text>
                 </Button>
-                <Button style={{marginTop: 24}} onPress={onRedirectPress} block transparent light>
-                    <Text style={{fontSize: 14}}>
+                <Button style={STYLES.outlineButton} onPress={onRedirectPress} block transparent light>
+                    <Text style={STYLES.outlineButtonText}>
                         {t('page.register.button.already_a_user')}
                     </Text>
                 </Button>
-            </Form>
+            </View>
         </Content>
     </Container>
 }

@@ -9,13 +9,18 @@ import { NavigationContainer } from '@react-navigation/native';
 import { useGQLClient } from '../util/client';
 import { AuthNavigator } from './navigation/AuthNavigator';
 import { UnAuthNavigator } from './navigation/UnAuthNavigator';
+import { useFonts } from 'expo-font'
 
 const Stack = createNativeStackNavigator()
 
 export const Router: React.FC = () => {
     const store = useStore()
     const client = useGQLClient(store)
-    if(!store || !client) {
+    const [isFontsLoaded] = useFonts({
+        Roboto: require("native-base/Fonts/Roboto.ttf"),
+        Roboto_medium: require("native-base/Fonts/Roboto_medium.ttf")
+    })
+    if(!store || !client || !isFontsLoaded) {
         return null
     }
 
