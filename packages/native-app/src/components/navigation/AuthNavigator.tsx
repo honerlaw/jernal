@@ -2,7 +2,6 @@ import React from "react"
 import { useSelector } from "react-redux"
 import { TokenSelector } from "../../store/selector/TokenSelector"
 import { Dashboard } from "../dashboard/Dashboard"
-import { Settings } from "../dashboard/Settings"
 import { JournalEntryAdd } from "../journal-entry-add/JournalEntryAdd"
 
 const DEFAULT_OPTIONS = {
@@ -33,10 +32,6 @@ export const AuthNavigator: React.FC<AuthNavigatorProps> = ({
                 ...DEFAULT_OPTIONS,
                 headerTitle: 'Journal'
             }} component={Dashboard} />
-            <Stack.Screen name="settings" options={{
-                ...DEFAULT_OPTIONS,
-                headerTitle: 'Settings'
-            }} component={Settings} />
             <Stack.Screen name="journal-entry-add" options={{
                 ...DEFAULT_OPTIONS,
                 headerTitle: 'New Entry'

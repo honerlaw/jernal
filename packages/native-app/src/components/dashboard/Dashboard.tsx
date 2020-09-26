@@ -1,10 +1,12 @@
 import React from 'react'
-import { Container, Content } from "native-base"
-import { useGetJournalsQuery } from '../../generated/graphql'
+import { Container, Content, View, Text } from "native-base"
+import { JournalEntryFragment, useGetJournalsQuery } from '../../generated/graphql'
 import { HeaderNav } from './header-nav/HeaderNav'
 import { Loading } from '../util/Loading'
 import { useIsFocused } from '@react-navigation/native'
 import { JournalEntry } from './JournalEntry'
+import format from 'date-fns/format'
+import { JournalEntryHeader } from './JournalEntryHeader'
 
 export const Dashboard: React.FC = () => {
     // basically, we just use this to trigger a re-render of this page
@@ -24,14 +26,29 @@ export const Dashboard: React.FC = () => {
         return null
     }
 
+    const groupedEntries: { [key: string]: JournalEntryFragment[] } = {}
+    journal.entries?.forEach((entry) => {
+        if (!entry) {
+            return
+        }
+        const date = format(new Date(entry.createdAt), 'MMddyyyy')
+        if (!groupedEntries[date]) {
+            groupedEntries[date] = []
+        }
+        groupedEntries[date].push(entry)
+    })
+
     return <Container>
-        <HeaderNav journalId={journal.id} />
+        <HeaderNav journalId={journal.id} entryCount={journal.entries?.length} />
         <Content>
-            {journal.entries?.map((entry) => {
-                if (!entry) {
-                    return null
-                }
-                return <JournalEntry key={entry.id} entry={entry} />
+            {Object.keys(groupedEntries).map((key) => {
+                const entries = groupedEntries[key]
+                return <View key={key}>
+                    <JournalEntryHeader iso={entries[0].createdAt} />
+                    {entries.map((entry) => {
+                        return <JournalEntry key={entry.id} entry={entry} />
+                    })}
+                </View>
             })}
         </Content>
     </Container>

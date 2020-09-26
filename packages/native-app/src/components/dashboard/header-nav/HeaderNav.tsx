@@ -2,7 +2,6 @@ import React from 'react'
 import { View } from 'native-base'
 import { StyleSheet } from "react-native"
 import Add from '../../../../assets/add.svg'
-import Settings from '../../../../assets/settings.svg'
 import { HeaderNavDetail } from './HeaderNavDetail'
 import { HeaderNavIconButton } from './HeaderNavIconButton'
 import { useNavigation } from '@react-navigation/native'
@@ -26,20 +25,21 @@ const STYLES = StyleSheet.create({
 
 type HeaderNavProps = {
     journalId: string
+    entryCount?: number
 }
 
 export const HeaderNav: React.FC<HeaderNavProps> = ({
-    journalId
+    journalId,
+    entryCount
 }) => {
     const navigator = useNavigation()
 
     return <View style={STYLES.container}>
         <View style={STYLES.detailContainer}>
-            <HeaderNavDetail title={'0'} description={'entries'} />
+            <HeaderNavDetail title={entryCount?.toFixed() || '0'} description={'entries'} />
 
             <View style={STYLES.buttonContainer}>
                 <HeaderNavIconButton icon={Add} onPress={() => navigator.navigate('journal-entry-add', { journalId })} />
-                <HeaderNavIconButton icon={Settings} onPress={() => navigator.navigate('settings')} />
             </View>
         </View>
     </View>

@@ -3,21 +3,21 @@ import { TouchableOpacity, StyleSheet } from "react-native"
 import React, { useState } from "react"
 import { useTranslation } from "react-i18next"
 import { AnswerFragment, Maybe } from "../../../generated/graphql"
-import { PRIMARY } from "../../../util/constant"
+import { PRIMARY, SIZING } from "../../../util/constant"
 
 const STYLES = StyleSheet.create({
     container: {
         flex: 0,
         flexWrap: 'wrap',
         flexDirection: 'row',
-        marginTop: 8,
-        marginBottom: 8
+        marginTop: SIZING.B,
+        marginBottom: SIZING.B
     },
     answerContainer: {
-        padding: 12,
-        marginRight: 8,
-        marginTop: 8,
-        borderRadius:16,
+        padding: SIZING.B + SIZING.A,
+        marginRight: SIZING.B,
+        marginTop: SIZING.B,
+        borderRadius: SIZING.C,
         backgroundColor: '#efefef'
     },
     answerSelected: {

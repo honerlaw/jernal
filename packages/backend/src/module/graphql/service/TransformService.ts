@@ -53,7 +53,7 @@ export class TransformService {
                         answer: decryptor.decrypt(question.answer)
                     }
                 })),
-                createdAt: entry.createdAt.getTime()
+                createdAt: entry.createdAt.toISOString()
             }
         }))
     }
